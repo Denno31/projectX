@@ -58,4 +58,12 @@ router.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
+router.get("/verify/token", async (req, res) => {
+  const { token, email } = req.body;
+  const user = await User.findOne({ token, email });
+  console.log(user);
+  if (user) return res.send({ verified: true });
+  res.send({ verified: false });
+});
+
 module.exports = router;
