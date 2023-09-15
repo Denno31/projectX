@@ -60,10 +60,17 @@ router.get("/logout", (req, res) => {
 
 router.get("/verify/token", async (req, res) => {
   const { token, email } = req.body;
-  const user = await User.findOne({ token, email });
-  console.log(user);
-  if (user) return res.send({ verified: true });
-  res.send({ verified: false });
+  try {
+    const user = await User.findOne({ token, email });
+    console.log(user);
+    if (user) return res.send({ verified: true });
+    res.send({ verified: false });
+  } catch (error) {
+    console.log("An error occurred==========================================");
+    console.log(error);
+    console.log("===========================================================");
+    res.send({ verified: false });
+  }
 });
 
 module.exports = router;
