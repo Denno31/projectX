@@ -61,7 +61,7 @@ router.get("/logout", (req, res) => {
 router.post("/verify/token", async (req, res) => {
   const payload = JSON.parse(req.body);
   const { token, email } = payload;
-  console.log(req.body);
+  console.log(payload);
   try {
     const user = await User.findOne({ token, email });
 
