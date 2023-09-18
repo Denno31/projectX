@@ -6,26 +6,30 @@ const router = express.Router();
 
 // main page
 router.get("/", async (req, res) => {
-  if (!req.session || !req.session.user) {
-    console.log("No session or not authenticated");
-    return res.render("login", { layout: "login" });
+  try {
+    if (!req.session || !req.session.user) {
+      console.log("No session or not authenticated");
+      return res.render("login", { layout: "login" });
+    }
+    const conn = await db;
+    const [rows, fields] = await conn.execute("select * from weblogintab");
+
+    // get authorized users
+    const authorizedUsers = await User.find();
+    console.log(authorizedUsers[0].token);
+
+    res.render("main", {
+      layout: "main",
+      users: rows,
+      loggedInUser: req.session.user,
+      authorizedUsers: authorizedUsers.map((user) => ({
+        email: user.email,
+        token: user.token || "",
+      })),
+    });
+  } catch (error) {
+    console.log(error);
   }
-  const conn = await db;
-  const [rows, fields] = await conn.execute("select * from weblogintab");
-
-  // get authorized users
-  const authorizedUsers = await User.find();
-  console.log(authorizedUsers[0].token);
-
-  res.render("main", {
-    layout: "main",
-    users: rows,
-    loggedInUser: req.session.user,
-    authorizedUsers: authorizedUsers.map((user) => ({
-      email: user.email,
-      token: user.token || "",
-    })),
-  });
 });
 
 // login router
