@@ -59,10 +59,10 @@ router.get("/logout", (req, res) => {
 });
 
 router.post("/verify/token", async (req, res) => {
-  const { token, email } = req.body;
+  const { token, username } = req.body;
   console.log(req.body);
   try {
-    const user = await User.findOne({ token, email });
+    const user = await User.findOne({ token, username });
 
     if (user) return res.send({ verified: true });
     res.send({ verified: false });
